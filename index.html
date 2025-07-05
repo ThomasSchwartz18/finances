@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Net Worth Tracker</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <!-- Supabase JS -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+  <!-- Custom Styles -->
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="bg-black text-green-400 font-mono p-4">
+  <div class="container mx-auto">
+    <!-- Navigation Tabs -->
+    <nav class="mb-6">
+      <ul class="flex space-x-8 border-b border-green-700">
+        <li><button data-tab="home" class="pb-2 text-green-400 hover:text-white tab-btn">Home</button></li>
+        <li><button data-tab="networth" class="pb-2 text-green-400 hover:text-white tab-btn">Net Worth</button></li>
+      </ul>
+    </nav>
+
+    <!-- Home Tab -->
+    <div id="home-tab" class="tab-content hidden">
+      <h1 class="text-3xl font-bold mb-4 text-green-300">Monthly Overview</h1>
+      <!-- Detail view -->
+      <div id="month-detail" class="bg-gray-800 p-4 rounded mb-6 hidden">
+        <h2 class="text-xl font-semibold mb-2 text-green-200">Details for <span id="detail-month"></span></h2>
+        <div id="detail-content"></div>
+        <button id="close-detail" class="mt-4 bg-red-600 hover:bg-red-700 px-4 py-2 rounded text-white">Close</button>
+      </div>
+      <div id="monthly-preview" class="space-y-4"></div>
+    </div>
+
+    <!-- Net Worth Input Tab -->
+    <div id="networth-tab" class="tab-content hidden">
+      <h1 class="text-3xl font-bold mb-4 text-green-300">Monthly Net Worth Entry</h1>
+      <div class="mb-6">
+        <label for="month-picker" class="block font-semibold mb-1">Select Month:</label>
+        <input type="month" id="month-picker" class="border border-green-600 bg-black text-green-400 rounded px-3 py-2 w-full md:w-1/3">
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <!-- Assets Section -->
+        <div class="bg-gray-900 shadow rounded p-4">
+          <h2 class="text-xl font-semibold mb-4 text-green-200">Assets</h2>
+          <table class="w-full mb-4" id="assets-table">
+            <thead>
+              <tr>
+                <th class="text-left">Asset</th>
+                <th class="text-left">Value ($)</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+          <button id="add-asset" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded">Add Asset</button>
+        </div>
+        <!-- Liabilities Section -->
+        <div class="bg-gray-900 shadow rounded p-4">
+          <h2 class="text-xl font-semibold mb-4 text-green-200">Liabilities</h2>
+          <table class="w-full mb-4" id="liabilities-table">
+            <thead>
+              <tr>
+                <th class="text-left">Liability</th>
+                <th class="text-left">Amount ($)</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+          <button id="add-liability" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded">Add Liability</button>
+        </div>
+      </div>
+      <div class="mt-6">
+        <button id="save-month" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded">Save Month to Database</button>
+      </div>
+      <div class="bg-gray-900 shadow rounded p-6 mt-8">
+        <h2 class="text-xl font-semibold mb-4 text-green-200">Summary</h2>
+        <div class="flex flex-col lg:flex-row items-start lg:items-center">
+          <div class="lg:mr-8 mb-6 lg:mb-0 space-y-1">
+            <p>Assets Total: <span id="assets-total" class="font-bold text-green-100">$0</span></p>
+            <p>Liabilities Total: <span id="liabilities-total" class="font-bold text-green-100">$0</span></p>
+            <p>Net Worth: <span id="net-worth" class="font-bold text-green-100">$0</span></p>
+          </div>
+          <div class="w-full h-64">
+            <canvas id="networth-chart"></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Supabase initialization (replace with your own credentials)
+    const supabaseUrl = 'https://fyjtfocpvmgctzpgxsng.supabase.co';
+    const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZ5anRmb2Nwdm1nY3R6cGd4c25nIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTE3MzI4MTEsImV4cCI6MjA2NzMwODgxMX0.MnU0es_uAhGGva8G3NR7qujZk3ujicZbz0pmizvv7pw';
+    const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
+
+    // Tab functionality
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.tab-content').forEach(tab => tab.classList.add('hidden'));
+        document.getElementById(`${btn.dataset.tab}-tab`).classList.remove('hidden');
+        if (btn.dataset.tab === 'home') loadMonthlyPreview();
+      });
+    });
+    // Default to Home tab
+    document.querySelector('[data-tab="home"]').click();
+
+    // Load monthly previews
+    async function loadMonthlyPreview() {
+      const container = document.getElementById('monthly-preview');
+      container.innerHTML = '<p class="text-green-300">Loading...</p>';
+      const { data: rows, error } = await supabaseClient
+        .from('networth')
+        .select('month, assets_total, liabilities_total, net_worth')
+        .order('month', { ascending: false });
+      if (error) {
+        container.innerHTML = `<p class="text-red-500">Error: ${error.message}</p>`;
+        return;
+      }
+      container.innerHTML = '';
+      rows.forEach(row => {
+        const card = document.createElement('div');
+        card.className = 'bg-gray-800 p-4 rounded shadow flex justify-between items-center';
+        card.innerHTML = `
+          <div>
+            <p class="font-semibold text-green-200">${new Date(row.month).toLocaleString('default', { month: 'long', year: 'numeric' })}</p>
+            <p>Net Worth: <span class="font-bold text-green-100">$${row.net_worth.toLocaleString()}</span></p>
+          </div>
+          <div>
+            <button class="bg-green-500 hover:bg-green-600 px-3 py-1 rounded text-sm">View</button>
+          </div>`;
+        container.appendChild(card);
+      });
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const assetsTable = document.querySelector('#assets-table tbody');
+      const liabilitiesTable = document.querySelector('#liabilities-table tbody');
+      const addAssetBtn = document.getElementById('add-asset');
+      const addLiabilityBtn = document.getElementById('add-liability');
+      const assetsTotalEl = document.getElementById('assets-total');
+      const liabilitiesTotalEl = document.getElementById('liabilities-total');
+      const netWorthEl = document.getElementById('net-worth');
+      const saveMonthBtn = document.getElementById('save-month');
+      const ctx = document.getElementById('networth-chart').getContext('2d');
+
+      // Initialize Chart.js bar chart
+      const chart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: ['Assets', 'Liabilities', 'Net Worth'],
+          datasets: [{
+            label: 'Amount',
+            data: [0, 0, 0],
+            backgroundColor: ['rgba(0,255,0,0.6)', 'rgba(255,0,0,0.6)', 'rgba(0,255,0,0.6)'],
+            borderColor: ['#0f0', '#f00', '#0f0'],
+            borderWidth: 1,
+            borderRadius: 6,
+            hoverBackgroundColor: ['#0a0', '#c00', '#0a0']
+            }]
+        },
+        options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true } } }
+      });
+
+      // Update totals and chart
+      function updateSummary() {
+        let assetsTotal = 0;
+        document.querySelectorAll('.asset-value').forEach(input => {
+          assetsTotal += parseFloat(input.value) || 0;
+        });
+        let liabilitiesTotal = 0;
+        document.querySelectorAll('.liability-value').forEach(input => {
+          liabilitiesTotal += parseFloat(input.value) || 0;
+        });
+        const netWorth = assetsTotal - liabilitiesTotal;
+
+        assetsTotalEl.textContent = `$${assetsTotal.toLocaleString()}`;
+        liabilitiesTotalEl.textContent = `$${liabilitiesTotal.toLocaleString()}`;
+        netWorthEl.textContent = `$${netWorth.toLocaleString()}`;
+
+        netWorthEl.classList.toggle('negative', netWorth < 0);
+        netWorthEl.classList.toggle('positive', netWorth >= 0);
+
+        chart.data.datasets[0].data = [assetsTotal, liabilitiesTotal, netWorth];
+        chart.update();
+
+        return { assetsTotal, liabilitiesTotal, netWorth };
+      }
+
+      // Create a new row
+      function createRow(table, type) {
+        const tr = document.createElement('tr');
+        const nameTd = document.createElement('td');
+        const nameInput = document.createElement('input');
+        nameInput.type = 'text'; nameInput.placeholder = `${type} Name`;
+        nameInput.className = 'w-full border rounded px-2 py-1';
+        nameTd.appendChild(nameInput);
+
+        const valueTd = document.createElement('td');
+        const valueInput = document.createElement('input');
+        valueInput.type = 'number'; valueInput.placeholder = '$0';
+        valueInput.className = `${type.toLowerCase()}-value w-full border rounded px-2 py-1`;
+        valueInput.addEventListener('input', updateSummary);
+        valueTd.appendChild(valueInput);
+
+        const removeTd = document.createElement('td');
+        const removeBtn = document.createElement('button');
+        removeBtn.textContent = 'Remove';
+        removeBtn.className = 'bg-gray-200 hover:bg-gray-300 text-gray-800 px-2 py-1 rounded';
+        removeBtn.addEventListener('click', () => { tr.remove(); updateSummary(); });
+        removeTd.appendChild(removeBtn);
+
+        tr.append(nameTd, valueTd, removeTd);
+        table.appendChild(tr);
+      }
+
+      // Add initial rows
+      addAssetBtn.addEventListener('click', () => createRow(assetsTable, 'Asset'));
+      addLiabilityBtn.addEventListener('click', () => createRow(liabilitiesTable, 'Liability'));
+      createRow(assetsTable, 'Asset');
+      createRow(liabilitiesTable, 'Liability');
+      updateSummary();
+
+      // Save data to Supabase
+      saveMonthBtn.addEventListener('click', async () => {
+        const monthInput = document.getElementById('month-picker').value;
+        if (!monthInput) return alert('Please select a month.');
+        const { assetsTotal, liabilitiesTotal, netWorth } = updateSummary();
+        // Gather row data
+        const assets = Array.from(document.querySelectorAll('#assets-table tbody tr')).map(row => ({
+          name: row.querySelector('input[type="text"]').value || '',
+          value: parseFloat(row.querySelector('input[type="number"]').value) || 0
+        }));
+        const liabilities = Array.from(document.querySelectorAll('#liabilities-table tbody tr')).map(row => ({
+          name: row.querySelector('input[type="text"]').value || '',
+          value: parseFloat(row.querySelector('input[type="number"]').value) || 0
+        }));
+
+        // Insert into Supabase (table: networth)
+        const { data, error } = await supabaseClient
+          .from('networth')
+          .insert([{ month: `${monthInput}-01`, assets, liabilities, assets_total: assetsTotal, liabilities_total: liabilitiesTotal, net_worth: netWorth }]);
+
+        if (error) alert('Error saving data: ' + error.message);
+        else alert('Month saved successfully!');
+      });
+    });
+  </script>
+  <script src="app.js" type="module"></script>
+</body>
+</html>
