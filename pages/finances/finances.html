@@ -1,0 +1,77 @@
+<!-- pages/finances/finances.html -->
+<div id="finances-tab" class="tab-content hidden">
+  <h1 class="text-3xl font-bold mb-4 text-green-300">Finances</h1>
+
+  <!-- Net Worth Input Section -->
+  <div class="mb-6">
+    <label for="month-picker" class="block font-semibold mb-1">Select Month:</label>
+    <input type="month" id="month-picker" class="border border-green-600 bg-black text-green-400 rounded px-3 py-2 w-full md:w-1/3">
+  </div>
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <!-- Assets Section -->
+    <div class="bg-gray-900 shadow rounded p-4">
+      <h2 class="text-xl font-semibold mb-4 text-green-200">Assets</h2>
+      <table class="w-full mb-4" id="assets-table">
+        <thead>
+          <tr>
+            <th class="text-left">Asset</th>
+            <th class="text-left">Value ($)</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+      <button id="add-asset" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded">Add Asset</button>
+    </div>
+    <!-- Liabilities Section -->
+    <div class="bg-gray-900 shadow rounded p-4">
+      <h2 class="text-xl font-semibold mb-4 text-green-200">Liabilities</h2>
+      <table class="w-full mb-4" id="liabilities-table">
+        <thead>
+          <tr>
+            <th class="text-left">Liability</th>
+            <th class="text-left">Amount ($)</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+      <button id="add-liability" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded">Add Liability</button>
+    </div>
+  </div>
+  <div class="mt-6">
+    <button id="save-month" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded">Save Month to Database</button>
+  </div>
+  <div class="bg-gray-900 shadow rounded p-6 mt-8">
+    <h2 class="text-xl font-semibold mb-4 text-green-200">Summary</h2>
+    <div class="flex flex-col lg:flex-row items-start lg:items-center">
+      <div class="lg:mr-8 mb-6 lg:mb-0 space-y-1">
+        <p>Assets Total: <span id="assets-total" class="font-bold text-green-100">$0</span></p>
+        <p>Liabilities Total: <span id="liabilities-total" class="font-bold text-green-100">$0</span></p>
+        <p>Net Worth: <span id="net-worth" class="font-bold text-green-100">$0</span></p>
+      </div>
+      <div class="w-full h-64">
+        <canvas id="networth-chart"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <!-- Portfolio Addition Form -->
+  <div id="portfolio-form" class="mt-8 bg-gray-900 shadow rounded p-4">
+    <h2 class="text-2xl font-semibold mb-4 text-green-200">Add to Portfolio</h2>
+    <!-- Added account selection dropdown -->
+    <form id="add-holding-form" class="flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-4">
+      <select id="holding-account" class="border border-green-600 bg-black text-green-400 rounded px-2 py-1">
+        <option value="Individual">Individual</option>
+        <option value="Roth IRA">Roth IRA</option>
+      </select>
+      <select id="holding-type" class="border border-green-600 bg-black text-green-400 rounded px-2 py-1">
+        <option value="stock">Stock</option>
+        <option value="crypto">Crypto</option>
+      </select>
+      <input id="holding-ticker" type="text" placeholder="Ticker (e.g. AAPL or bitcoin)" class="w-full border border-green-600 bg-black text-green-400 rounded px-3 py-1">
+      <input id="holding-amount" type="number" placeholder="Quantity" class="w-full border border-green-600 bg-black text-green-400 rounded px-3 py-1">
+      <button id="add-holding" type="button" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded">Add</button>
+    </form>
+  </div>
+</div>

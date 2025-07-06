@@ -89,4 +89,8 @@ body {
   #net-worth.positive {
     color: rgba(0, 255, 0, 0.6) !important;
   }
+
+  #liabilities-table input {
+    color: #f56565; /* Tailwind’s red-400 hex; you can also use “#f00” or another shade */
+  }
   
