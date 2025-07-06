@@ -1,11 +1,11 @@
+<!-- index.html :contentReference[oaicite:0]{index=0} -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Net Worth Tracker</title>
-
-  <!-- Tailwind (dev CDN – swap to PostCSS in prod) -->
+  <!-- Tailwind (dev CDN · swap to PostCSS in prod) -->
   <script src="https://cdn.tailwindcss.com"></script>
   <!-- Chart.js -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -18,28 +18,15 @@
   }
   </script>
   <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="arch-theme.css" />
 </head>
-<body class="bg-black text-green-400 font-mono p-4">
+<body class="font-mono p-4">
   <div class="container mx-auto">
-    <!-- Nav -->
-    <nav class="mb-6">
-      <ul class="flex space-x-8 border-b border-green-700">
-        <li>
-          <button data-tab="home" class="pb-2 text-green-400 hover:text-white">
-            Home
-          </button>
-        </li>
-        <li>
-          <button data-tab="finances" class="pb-2 text-green-400 hover:text-white">
-            Finances
-          </button>
-        </li>
-      </ul>
+    <nav class="term-commandbar">
+      <code>➜ <button data-tab="home">home</button> | <button data-tab="finances">finances</button></code>
     </nav>
     <!-- content will be injected here by each module -->
   </div>
-
-  <!-- single entry‐point -->
   <script type="module" src="./app.js"></script>
 </body>
 </html>

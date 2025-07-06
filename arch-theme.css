@@ -1,0 +1,89 @@
+/* arch-theme.css (new) */
+:root {
+    --ansi-black:   #1d1f21;
+    --ansi-red:     #cc6666;
+    --ansi-green:   #b5bd68;
+    --ansi-yellow:  #f0c674;
+    --ansi-blue:    #81a2be;
+    --ansi-magenta: #b294bb;
+    --ansi-cyan:    #8abeb7;
+    --ansi-white:   #c5c8c6;
+    --ui-trans:     rgba(28,30,32,0.85);
+  }
+  
+  body {
+    background: var(--ansi-black);
+    color: var(--ansi-white);
+    font-family: 'Fira Mono', monospace;
+    line-height: 1.4;
+  }
+  
+  /* Window container */
+  .term-window {
+    background: var(--ui-trans);
+    border: 1px solid var(--ansi-blue);
+    border-radius: 4px;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+  }
+  .term-header {
+    padding: 0.5rem 1rem;
+    background: #282a2e;
+    border-bottom: 1px solid var(--ansi-blue);
+    color: var(--ansi-white);
+    font-weight: bold;
+    position: relative;
+  }
+  .term-header::before,
+  .term-header::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    width: 10px; height: 10px;
+    border-radius: 50%;
+  }
+  .term-header::before { left: 8px; background: var(--ansi-red); }
+  .term-header::after  { left: 26px; background: var(--ansi-yellow); }
+  .term-body {
+    padding: 1rem;
+  }
+  
+  /* Command bar */
+  .term-commandbar {
+    margin-bottom: 1rem;
+  }
+  .term-commandbar code {
+    color: var(--ansi-green);
+  }
+  .term-commandbar button {
+    background: transparent;
+    border: none;
+    color: var(--ansi-cyan);
+    font-family: inherit;
+    cursor: pointer;
+  }
+  .term-commandbar button:hover {
+    color: var(--ansi-white);
+    text-decoration: underline;
+  }
+  
+  /* Tables & cards */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: inherit;
+  }
+  th, td {
+    padding: 0.5rem;
+    border-bottom: 1px solid #333;
+  }
+  tr:nth-child(even) { background: rgba(200,200,200,0.05); }
+  th { color: var(--ansi-yellow); text-align: left; }
+  .summary-card {
+    background: var(--ui-trans);
+    border: 1px solid var(--ansi-green);
+    border-radius: 3px;
+    padding: 1rem;
+  }
+  .summary-card h2 { color: var(--ansi-green); }
+  

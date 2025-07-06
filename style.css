@@ -1,87 +1,85 @@
+/* style.css (unchanged)  */
 /* Base styles (apply hacker/terminal vibe) */
 body {
-    background-color: #000;
-    color: #0f0;
-    font-family: 'Courier New', Courier, monospace;
-  }
+  background-color: #000;
+  color: #0f0;
+  font-family: 'Courier New', Courier, monospace;
+}
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 1rem;
+}
+nav ul {
+  display: flex;
+  gap: 2rem;
+}
+nav ul li button {
+  background: transparent;
+  border: none;
+  font-size: 1rem;
+  cursor: pointer;
+}
+/* Mobile (phone) */
+@media (max-width: 639px) {
   .container {
-    max-width: 1200px;
-    margin: 0 auto;
+    padding: 0.5rem;
+  }
+  nav ul {
+    flex-direction: column;
+    gap: 1rem;
+    border-bottom: none;
+  }
+  .tab-content {
+    padding: 0.5rem 0;
+  }
+  /* Stack tables and form elements */
+  .grid {
+    display: block;
+  }
+  #assets-table,
+  #liabilities-table {
+    width: 100%;
+    font-size: 0.9rem;
+  }
+  #networth-chart {
+    height: 200px !important;
+  }
+}
+/* Tablet */
+@media (min-width: 640px) and (max-width: 1023px) {
+  .container {
+    max-width: 100%;
     padding: 1rem;
   }
   nav ul {
-    display: flex;
-    gap: 2rem;
+    justify-content: space-around;
   }
-  nav ul li button {
-    background: transparent;
-    border: none;
+  .grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  #assets-table,
+  #liabilities-table {
+    width: 100%;
     font-size: 1rem;
-    cursor: pointer;
   }
-  /* Mobile (phone) */
-  @media (max-width: 639px) {
-    .container {
-      padding: 0.5rem;
-    }
-    nav ul {
-      flex-direction: column;
-      gap: 1rem;
-      border-bottom: none;
-    }
-    .tab-content {
-      padding: 0.5rem 0;
-    }
-    /* Stack tables and form elements */
-    .grid {
-      display: block;
-    }
-    #assets-table,
-    #liabilities-table {
-      width: 100%;
-      font-size: 0.9rem;
-    }
-    #networth-chart {
-      height: 200px !important;
-    }
+  #networth-chart {
+    height: 300px !important;
   }
-  /* Tablet */
-  @media (min-width: 640px) and (max-width: 1023px) {
-    .container {
-      max-width: 100%;
-      padding: 1rem;
-    }
-    nav ul {
-      justify-content: space-around;
-    }
-    .grid {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 1rem;
-    }
-    /* Tables take full width but sit in separate blocks */
-    #assets-table,
-    #liabilities-table {
-      width: 100%;
-      font-size: 1rem;
-    }
-    /* Chart resizing */
-    #networth-chart {
-      height: 300px !important;
-    }
+}
+/* Desktop (above tablet) */
+@media (min-width: 1024px) {
+  nav ul {
+    justify-content: flex-start;
   }
-  /* Desktop (above tablet) */
-  @media (min-width: 1024px) {
-    nav ul {
-      justify-content: flex-start;
-    }
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 1.5rem;
-    }
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
   }
-
+}
 /* Conditional net worth coloring */
 #net-worth.negative {
     color: rgba(255, 0, 0, 0.6) !important;
@@ -89,8 +87,6 @@ body {
   #net-worth.positive {
     color: rgba(0, 255, 0, 0.6) !important;
   }
-
-  #liabilities-table input {
-    color: #f56565; /* Tailwind’s red-400 hex; you can also use “#f00” or another shade */
-  }
-  
+#liabilities-table input {
+  color: #f56565;
+}

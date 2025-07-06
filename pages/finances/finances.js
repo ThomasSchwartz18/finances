@@ -1,12 +1,10 @@
 // pages/finances/finances.js
 
 export async function initFinancesTab(supabaseClient) {
-  // 1) load the HTML fragment for Finances tab
   const resp = await fetch(new URL('./finances.html', import.meta.url));
   const html = await resp.text();
   document.querySelector('.container').insertAdjacentHTML('beforeend', html);
 
-  // 2) Wire up the "Finances" tab button
   document.querySelector('[data-tab="finances"]').addEventListener('click', () => {
     toggleTabs('finances');
   });

@@ -1,4 +1,4 @@
-// app.js
+// app.js :contentReference[oaicite:1]{index=1}
 import { createClient }    from '@supabase/supabase-js';
 import { initHomeTab }     from './pages/home/home.js';
 import { initFinancesTab } from './pages/finances/finances.js';
@@ -16,10 +16,18 @@ window.toggleTabs = tabId => {
 };
 
 document.addEventListener('DOMContentLoaded', async () => {
-  // inject and wire up both tabs
   await initHomeTab(supabaseClient);
   await initFinancesTab(supabaseClient);
-
-  // default to Home
   document.querySelector('[data-tab="home"]').click();
+
+  // Optional typing effect
+  function typePrompt(el, text, speed = 50) {
+    let i = 0;
+    const iv = setInterval(() => {
+      el.textContent += text[i++]||'';
+      if (i > text.length) clearInterval(iv);
+    }, speed);
+  }
+  document.querySelectorAll('.term-header')
+          .forEach(h=>typePrompt(h, h.textContent.trim()));
 });

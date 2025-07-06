@@ -118,7 +118,6 @@ export async function initHomeTab(supabaseClient) {
           <thead>
             <tr>
               <th class="text-left text-green-200">Ticker</th>
-              <th class="text-left text-green-200">Type</th>
               <th class="text-left text-green-200">Qty</th>
               <th class="text-left text-green-200">Price</th>
               <th class="text-left text-green-200">Value</th>
@@ -133,7 +132,6 @@ export async function initHomeTab(supabaseClient) {
           const tr = document.createElement('tr');
           tr.innerHTML = `
             <td class="px-2 py-1">${h.ticker.toUpperCase()}</td>
-            <td class="px-2 py-1">${h.type}</td>
             <td class="px-2 py-1">${h.amount}</td>
             <td class="px-2 py-1">$${price.toLocaleString()}</td>
             <td class="px-2 py-1">$${Number(value).toLocaleString()}</td>
